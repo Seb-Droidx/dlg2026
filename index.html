@@ -30,6 +30,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{background:var(--bg);scroll-behavior:smooth;}
+button,div[onclick]{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 
 /* NAV */
@@ -995,20 +996,20 @@ function renderPlan(){
 
   let html=`
   <!-- XP / LEVEL HERO -->
-  <div style="background:linear-gradient(135deg,rgba(${lvl.color.replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.12),rgba(10,10,15,0));border:1px solid ${lvl.color}33;border-radius:16px;padding:16px;margin-bottom:10px;">
+  <div style="background:linear-gradient(135deg,rgba(232,255,71,0.08),transparent);border:1px solid rgba(232,255,71,0.25);border-radius:16px;padding:16px;margin-bottom:10px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--muted)">LEVEL ${lvl.idx+1}</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:${lvl.color};line-height:1">${lvl.icon} ${lvl.name.toUpperCase()}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1">${lvl.icon} ${lvl.name.toUpperCase()}</div>
         ${lvl.next ? `<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">Nächstes: ${lvl.next.icon} ${lvl.next.name} · ${lvl.next.min - xpData.earned} XP</div>` : '<div style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">MAX LEVEL 🏆</div>'}
       </div>
       <div style="text-align:right;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:${lvl.color};line-height:1">${xpData.earned}</div>
-        <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:2px">XP TOTAL</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--accent);line-height:1;text-shadow:0 0 20px rgba(232,255,71,0.5)">${xpData.earned}</div>
+        <div style="font-size:9px;color:var(--text);opacity:0.6;font-family:'DM Mono',monospace;letter-spacing:2px">XP TOTAL</div>
       </div>
     </div>
     <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
-      <div style="height:100%;width:${lvl.pct}%;background:${lvl.color};border-radius:3px;transition:width .6s ease;"></div>
+      <div style="height:100%;width:${lvl.pct}%;background:var(--accent);border-radius:3px;transition:width .6s ease;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:4px;">
       <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">${lvl.pct}% zum nächsten Level</div>
@@ -1068,7 +1069,7 @@ function renderPlan(){
       if(isC)bh+='<span class="badge b-now">JETZT</span>';
 
       html+=`<div class="wcard${isC?' current':''}${isDone?' done':''}${isOpen?' open':''}" id="wc${wi}">
-        <div class="whdr" onclick="toggleW(${wi})">
+        <div class="whdr" onclick="toggleW(${wi})" ontouchend="event.preventDefault();toggleW(${wi})">
           <div class="wleft">
             <div class="wnum">${String(w.num).padStart(2,'0')}</div>
             <div><div class="wtitle">${w.title}${bh}</div><div class="wdates">${w.dates} · TSS ~${w.tss}</div></div>
@@ -1087,7 +1088,7 @@ function renderPlan(){
           </div>
           <div class="sactions">
             ${s.zwo?`<button class="zwo-btn" onclick="event.stopPropagation();dlZWO(${JSON.stringify(s.zwo).replace(/"/g,'&quot;')})">ZWO</button>`:''}
-            <button class="chk${done?' on':''}" onclick="event.stopPropagation();toggleS(${wi},${si})" type="button"></button>
+            <button class="chk${done?' on':''}" onclick="event.stopPropagation();toggleS(${wi},${si})" ontouchend="event.preventDefault();event.stopPropagation();toggleS(${wi},${si})" type="button"></button>
           </div>
         </div>`;
       });
@@ -1096,7 +1097,7 @@ function renderPlan(){
         <div class="wchecks"><div class="checks-lbl">Wochenziele</div>`;
       w.checks.forEach((c,ci)=>{
         const d=S[gk(wi,'c',ci)];
-        html+=`<button class="ci${d?' on':''}" onclick="toggleC(${wi},${ci})" type="button">
+        html+=`<button class="ci${d?' on':''}" onclick="toggleC(${wi},${ci})" ontouchend="event.preventDefault();toggleC(${wi},${ci})" type="button">
           <div class="mini-chk"></div><div class="ci-txt">${c}</div></button>`;
       });
       html+=`</div></div></div>`;
@@ -1371,7 +1372,7 @@ function renderRace(){
   let h='';
   RACE_CHECKS.forEach((c,i)=>{
     const d=S[`race_check_${i}`];
-    h+=`<button class="ci${d?' on':''}" onclick="toggleRaceCheck(${i})" type="button">
+    h+=`<button class="ci${d?' on':''}" onclick="toggleRaceCheck(${i})" ontouchend="event.preventDefault();toggleRaceCheck(${i})" type="button">
       <div class="mini-chk"></div><div class="ci-txt">${c}</div></button>`;
   });
   document.getElementById('raceDayChecks').innerHTML=h;
@@ -1554,7 +1555,7 @@ function renderBatch(){
   allZwos.forEach((z,i)=>{
     const on=S[`batch_${i}`]!==false;// default selected
     h+=`<div class="batch-item">
-      <div class="batch-chk${on?' on':''}" onclick="toggleBatch(${i})"></div>
+      <div class="batch-chk${on?' on':''}" onclick="toggleBatch(${i})" ontouchend="event.preventDefault();toggleBatch(${i})"></div>
       <div class="batch-name">${z.name}</div>
       <div class="batch-week">W${z.week} · ${z.dates}</div>
     </div>`;
