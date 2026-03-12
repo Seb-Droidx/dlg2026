@@ -143,7 +143,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .sactions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .zwo-btn{height:26px;padding:0 9px;border-radius:7px;border:1px solid rgba(232,255,71,.3);background:rgba(232,255,71,.07);color:var(–accent);font-size:9px;font-family:‘DM Mono’,monospace;cursor:pointer;transition:all .15s;}
 .zwo-btn:active{background:rgba(232,255,71,.18);transform:scale(.95);}
-.chk{width:32px;height:32px;border-radius:8px;border:2.5px solid rgba(232,255,71,0.5);background:rgba(232,255,71,0.06);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.chk{width:32px;height:32px;border-radius:8px;border:2.5px solid rgba(232,255,71,0.5);background:rgba(232,255,71,0.06);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;outline:none;-webkit-appearance:none;}
 .chk:active{transform:scale(.88);}
 .chk.on{background:var(–accent);border-color:var(–accent);box-shadow:0 0 10px rgba(232,255,71,0.4);}
 .chk.on::after{content:‘✓’;color:#0a0a0f;font-size:18px;font-weight:900;line-height:1;}
@@ -154,7 +154,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .focus-txt{font-size:11px;color:var(–text);line-height:1.5;opacity:.8;}
 .wchecks{padding:8px 14px 12px;border-top:1px solid var(–border);background:rgba(26,26,36,.3);}
 .checks-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(–muted);font-family:‘DM Mono’,monospace;margin-bottom:7px;}
-.ci{display:flex;align-items:center;gap:9px;padding:5px 0;cursor:pointer;border-radius:6px;}
+.ci{display:flex;align-items:center;gap:9px;padding:5px 0;cursor:pointer;border-radius:6px;width:100%;background:transparent;border:none;text-align:left;}
 .ci:active{background:var(–surface2);}
 .mini-chk{width:20px;height:20px;border-radius:6px;border:2px solid rgba(232,255,71,0.4);background:rgba(232,255,71,0.04);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .ci.on .mini-chk{background:var(–accent);border-color:var(–accent);}
@@ -1087,7 +1087,7 @@ function renderPlan(){
           </div>
           <div class="sactions">
             ${s.zwo?`<button class="zwo-btn" onclick="event.stopPropagation();dlZWO(${JSON.stringify(s.zwo).replace(/"/g,'&quot;')})">ZWO</button>`:''}
-            <div class="chk${done?' on':''}" onclick="event.stopPropagation();toggleS(${wi},${si})"></div>
+            <button class="chk${done?' on':''}" onclick="event.stopPropagation();toggleS(${wi},${si})" type="button"></button>
           </div>
         </div>`;
       });
@@ -1096,8 +1096,8 @@ function renderPlan(){
         <div class="wchecks"><div class="checks-lbl">Wochenziele</div>`;
       w.checks.forEach((c,ci)=>{
         const d=S[gk(wi,'c',ci)];
-        html+=`<div class="ci${d?' on':''}" onclick="toggleC(${wi},${ci})">
-          <div class="mini-chk"></div><div class="ci-txt">${c}</div></div>`;
+        html+=`<button class="ci${d?' on':''}" onclick="toggleC(${wi},${ci})" type="button">
+          <div class="mini-chk"></div><div class="ci-txt">${c}</div></button>`;
       });
       html+=`</div></div></div>`;
     });
@@ -1371,8 +1371,8 @@ function renderRace(){
   let h='';
   RACE_CHECKS.forEach((c,i)=>{
     const d=S[`race_check_${i}`];
-    h+=`<div class="ci${d?' on':''}" onclick="toggleRaceCheck(${i})">
-      <div class="mini-chk"></div><div class="ci-txt">${c}</div></div>`;
+    h+=`<button class="ci${d?' on':''}" onclick="toggleRaceCheck(${i})" type="button">
+      <div class="mini-chk"></div><div class="ci-txt">${c}</div></button>`;
   });
   document.getElementById('raceDayChecks').innerHTML=h;
   // load saved result
