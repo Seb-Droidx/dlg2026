@@ -1069,7 +1069,7 @@ function renderPlan(){
       if(isC)bh+='<span class="badge b-now">JETZT</span>';
 
       html+=`<div class="wcard${isC?' current':''}${isDone?' done':''}${isOpen?' open':''}" id="wc${wi}">
-        <div class="whdr" onclick="toggleW(${wi})" ontouchend="event.preventDefault();toggleW(${wi})">
+        <div class="whdr" data-tw="${wi}">
           <div class="wleft">
             <div class="wnum">${String(w.num).padStart(2,'0')}</div>
             <div><div class="wtitle">${w.title}${bh}</div><div class="wdates">${w.dates} · TSS ~${w.tss}</div></div>
@@ -1088,7 +1088,7 @@ function renderPlan(){
           </div>
           <div class="sactions">
             ${s.zwo?`<button class="zwo-btn" onclick="event.stopPropagation();dlZWO(${JSON.stringify(s.zwo).replace(/"/g,'&quot;')})">ZWO</button>`:''}
-            <button class="chk${done?' on':''}" onclick="event.stopPropagation();toggleS(${wi},${si})" ontouchend="event.preventDefault();event.stopPropagation();toggleS(${wi},${si})" type="button"></button>
+            <button class="chk${done?' on':''}" data-ts="${wi}" data-ss="${si}" type="button"></button>
           </div>
         </div>`;
       });
@@ -1097,7 +1097,7 @@ function renderPlan(){
         <div class="wchecks"><div class="checks-lbl">Wochenziele</div>`;
       w.checks.forEach((c,ci)=>{
         const d=S[gk(wi,'c',ci)];
-        html+=`<button class="ci${d?' on':''}" onclick="toggleC(${wi},${ci})" ontouchend="event.preventDefault();toggleC(${wi},${ci})" type="button">
+        html+=`<button class="ci${d?' on':''}" data-tc="${wi}" data-cc="${ci}" type="button">
           <div class="mini-chk"></div><div class="ci-txt">${c}</div></button>`;
       });
       html+=`</div></div></div>`;
@@ -1590,6 +1590,22 @@ if(!S[`w${cw}_o`]){S[`w${cw}_o`]=true;save();}
 // init ftp history if empty
 if(!S.ftpHistory)S.ftpHistory=[{date:'20.02.2026',ftp:272,wkg:'3.22'}];
 renderPlan();
+
+// ── Event Delegation für Plan-Tab (iOS-safe) ──────────────────────────────
+(function(){
+  const container = document.getElementById('planContent');
+  function handle(e){
+    const btn = e.target.closest('[data-ts],[data-tc],[data-tw]');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(btn.dataset.ts !== undefined)      toggleS(+btn.dataset.ts, +btn.dataset.ss);
+    else if(btn.dataset.tc !== undefined) toggleC(+btn.dataset.tc, +btn.dataset.cc);
+    else if(btn.dataset.tw !== undefined) toggleW(+btn.dataset.tw);
+  }
+  container.addEventListener('touchend', handle, {passive:false});
+  container.addEventListener('click',    handle, false);
+})();
 </script>
 
 <script>
